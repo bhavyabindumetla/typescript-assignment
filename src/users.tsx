@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
 
-import { fetchUsers, USER_STATE } from './Api';
+import { fetchUsers } from './Api';
 import UserCard from './components/user-card'
 import { RouteComponentProps } from 'react-router';
+import { deleteUser, insertUser } from './redux/users-slice';
+import { useAppDispatch, useAppSelector } from './redux/hooks';
 
 const Users = ({ match }: RouteComponentProps) => {
-  const [users, setUsers] = useState<USER_STATE[]>([])
+
+  const users = useAppSelector(state => state.usersRes.users)
+  const dispatch = useAppDispatch()
+
   const [newUser, setNewUser] = useState({
     first_name: "",
     last_name: "",
@@ -13,7 +18,7 @@ const Users = ({ match }: RouteComponentProps) => {
 
   const fetchUsersList = async () => {
     const usersList = await fetchUsers()
-    setUsers([...users, ...usersList])
+    dispatch(insertUser(usersList))
   }
 
   const handleInput = (e: React.FormEvent<HTMLInputElement>, name: string) => {
@@ -28,9 +33,7 @@ const Users = ({ match }: RouteComponentProps) => {
 
   const handleAddUser = () => {
 
-    let usersList = [...users]
-    usersList.push(newUser)
-    setUsers(usersList)
+    dispatch(insertUser([newUser]))
     setNewUser({
       first_name: "",
       last_name: "",
@@ -38,11 +41,9 @@ const Users = ({ match }: RouteComponentProps) => {
   }
 
   const handleRemove = (index: number) => {
-
-    let usersList = [...users]
-    usersList.splice(index, 1)
-    setUsers(usersList)
+    dispatch(deleteUser(index))
   }
+
 
   return (
     <div className="container m-5">
