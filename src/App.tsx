@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,7 +7,7 @@ import {
 } from "react-router-dom";
 import Users from './users';
 
-const App = () => {
+const App: React.FC = () => {
 
   return (
     <Router>
@@ -34,15 +35,13 @@ const App = () => {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/users" component={Users}>
-            {/* <Users /> */}
-          </Route>
+          <Route path="/users" component={Users} />
         </Switch>
       </div>
     </Router>
   );
 }
 
-const Home = () => (<h1 className="m-5">Home page</h1>)
+const Home: React.FC = () => (<h1 className="m-5">Home page</h1>)
 
-export default App;
+export default React.memo(App);

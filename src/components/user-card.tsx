@@ -1,9 +1,9 @@
 import React from 'react'
 
-type Props = {
+interface Props {
     userName: string;
     sno: number;
-    handleRemove: Function;
+    handleRemove: (index: number) => void;
 }
 
 const UserCard: React.FC<Props> = ({userName, sno, handleRemove}) =>(
@@ -16,4 +16,4 @@ const UserCard: React.FC<Props> = ({userName, sno, handleRemove}) =>(
     </div>
 )
 
-export default UserCard
+export default React.memo(UserCard);

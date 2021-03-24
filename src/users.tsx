@@ -1,37 +1,37 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
-import { fetchUsers } from './Api';
+import { fetchUsers, USER_STATE } from './Api';
 import UserCard from './components/user-card'
 import { RouteComponentProps } from 'react-router';
 import { deleteUser, insertUser } from './redux/users-slice';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 
-const Users = ({ match }: RouteComponentProps) => {
+const Users: React.FC<RouteComponentProps> = ({ match }: RouteComponentProps) => {
 
-  const users = useAppSelector(state => state.usersRes.users)
+  const users: Array<USER_STATE> = useAppSelector(state => state.usersRes.users)
   const dispatch = useAppDispatch()
 
-  const [newUser, setNewUser] = useState({
+  const [newUser, setNewUser] = useState<USER_STATE>({
     first_name: "",
     last_name: "",
   })
 
-  const fetchUsersList = async () => {
-    const usersList = await fetchUsers()
+  const fetchUsersList = async (): Promise<void> => {
+    const usersList: Array<USER_STATE> = await fetchUsers()
     dispatch(insertUser(usersList))
   }
 
-  const handleInput = (e: React.FormEvent<HTMLInputElement>, name: string) => {
+  const handleInput = useCallback((e: React.FormEvent<HTMLInputElement>, name: string): void => {
 
-    const user = {
+    const user: USER_STATE = {
       ...newUser,
       [name]: e.currentTarget.value
     }
 
     setNewUser(user)
-  }
+  }, [newUser])
 
-  const handleAddUser = () => {
+  const handleAddUser = (): void => {
 
     dispatch(insertUser([newUser]))
     setNewUser({
@@ -40,9 +40,9 @@ const Users = ({ match }: RouteComponentProps) => {
     })
   }
 
-  const handleRemove = (index: number) => {
+  const handleRemove = useCallback((index: number): void => {
     dispatch(deleteUser(index))
-  }
+  }, [dispatch])
 
 
   return (
@@ -60,7 +60,7 @@ const Users = ({ match }: RouteComponentProps) => {
         name="First Name"
         placeholder="First Name"
         value={newUser.first_name}
-        onChange={(e) => handleInput(e, "first_name")}
+        onChange={(e: React.FormEvent<HTMLInputElement>) => handleInput(e, "first_name")}
         className="mr-2 p-1"
       />
       <input
@@ -68,7 +68,7 @@ const Users = ({ match }: RouteComponentProps) => {
         name="Last Name"
         placeholder="Last Name"
         value={newUser.last_name}
-        onChange={(e) => handleInput(e, "last_name")}
+        onChange={(e: React.FormEvent<HTMLInputElement>) => handleInput(e, "last_name")}
         className="mr-2 p-1"
       />
       <button
@@ -78,7 +78,7 @@ const Users = ({ match }: RouteComponentProps) => {
         Add User
       </button>
       <div className="w-25">
-        {users.map((user, index) => (
+        {users.map((user: USER_STATE, index: number) => (
           <UserCard
             key={index}
             userName={user.first_name + " " + user.last_name}
@@ -91,4 +91,4 @@ const Users = ({ match }: RouteComponentProps) => {
   )
 }
 
-export default Users
+export default React.memo(Users);

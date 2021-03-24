@@ -3,7 +3,7 @@ import { USER_STATE } from '../Api';
 
 // Define a  type for the splice state
 interface UserState {
-    users: USER_STATE[];
+    users: Array<USER_STATE>;
 }
 
 // Define initial state using that type
@@ -16,7 +16,7 @@ export const UserSlice = createSlice({
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        insertUser : (state, action: PayloadAction<USER_STATE[]>) => {
+        insertUser : (state, action: PayloadAction<Array<USER_STATE>>) => {
             state.users = [...state.users, ...action.payload]
         },
         deleteUser: (state, action: PayloadAction<number>) => {
