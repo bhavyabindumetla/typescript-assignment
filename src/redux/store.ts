@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
+import usersNormalizr from './users-normalizer-slice'
 import users from './users-slice'
 
 const store = configureStore({
     reducer: {
-        usersRes: users
+        usersRes: users,
+        usersNormRes: usersNormalizr,
     }
 })
 

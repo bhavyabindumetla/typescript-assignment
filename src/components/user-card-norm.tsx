@@ -3,13 +3,14 @@ import React, { useCallback } from 'react'
 interface Props {
     userName: string;
     sno: number;
+    id: number;
     handleRemove: (index: number) => void;
 }
 
-const UserCard: React.FC<Props> = ({userName, sno, handleRemove}) =>{
+const UserCard: React.FC<Props> = ({userName, id, sno, handleRemove}) =>{
     const handelClick = useCallback((): void => {
-        handleRemove(sno-1)
-    }, [handleRemove, sno])
+        handleRemove(id)
+    }, [handleRemove, id])
     
     return (
         <div className="d-flex justify-content-between m-2 align-items-center">

@@ -6,6 +6,7 @@ import {
   Link
 } from "react-router-dom";
 import Users from './users';
+import UsersNorm from './users-normalizr'
 
 const App: React.FC = () => {
 
@@ -20,6 +21,9 @@ const App: React.FC = () => {
           </li>
           <li className="nav-item active">
             <Link className="nav-link" to="/users">Users</Link>
+          </li>
+          <li className="nav-item active">
+            <Link className="nav-link" to="/users-norm">Users with Normalizr</Link>
           </li>
         </ul>
         </nav>
@@ -36,6 +40,7 @@ const App: React.FC = () => {
             <Home />
           </Route>
           <Route path="/users" component={Users} />
+          <Route path="/users-norm" component={UsersNorm} />
         </Switch>
       </div>
     </Router>

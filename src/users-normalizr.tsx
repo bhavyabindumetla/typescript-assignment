@@ -1,38 +1,36 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { fetchUsers, UserConfig } from './Api';
-import UserCard from './components/user-card'
+import UserCard from './components/user-card-norm'
 import { RouteComponentProps } from 'react-router';
-import { deleteUser, fetchUsersThunk, insertUser, UserState } from './redux/users-slice';
-import { useAppDispatch, useAppSelector } from './redux/hooks';
+import { useAppDispatch, useAppSelector, userNormSelector } from './redux/hooks';
+import { addUser, removeUser, fetchUsers } from './redux/users-normalizer-slice'
+import { useSelector } from 'react-redux';
+import { UserConfig } from './Api';
 
 interface Props {
   routerProps: RouteComponentProps
 }
 
-const Users: React.FC<Props> = (props: Props) => {
+const UsersNorm: React.FC<Props> = (props: Props) => {
 
-  // without normalizr
-  // const users: Array<UserConfig> = useAppSelector(state => state.usersRes.users)
-
-  // with normalizr
-  const userNormalizr: UserState = useAppSelector(state => state.usersRes)
+  const users = useSelector(userNormSelector.selectAll)
   const dispatch = useAppDispatch()
+  const state = useAppSelector(state=>state)
+  console.log("state", state)
 
   const [newUser, setNewUser] = useState<UserConfig>({
     first_name: "",
     last_name: "",
-    id: userNormalizr?.users?.length
+    id: users.length
   })
 
   const fetchUsersList = async (): Promise<void> => {
-    const usersList: Array<UserConfig> = await fetchUsers()
-    dispatch(insertUser(usersList))
+    dispatch(fetchUsers())
   }
 
   const handleInput = useCallback((e: React.FormEvent<HTMLInputElement>): void => {
 
-    const user: UserConfig = {
+    const user = {
       ...newUser,
       [e.currentTarget.name]: e.currentTarget.value
     }
@@ -42,7 +40,7 @@ const Users: React.FC<Props> = (props: Props) => {
 
   const handleAddUser = (): void => {
 
-    dispatch(insertUser([newUser]))
+    dispatch(addUser({...newUser}))
     setNewUser({
       first_name: "",
       last_name: "",
@@ -51,12 +49,11 @@ const Users: React.FC<Props> = (props: Props) => {
   }
 
   const handleRemove = useCallback((index: number): void => {
-    dispatch(deleteUser(index))
+    dispatch(removeUser(index))
   }, [dispatch])
 
-  // using create async thunk
   useEffect(() => {
-    dispatch(fetchUsersThunk())
+    dispatch(fetchUsers())
   }, [dispatch])
 
 
@@ -93,22 +90,12 @@ const Users: React.FC<Props> = (props: Props) => {
         Add User
       </button>
       <div className="w-25">
-        {/* without normalizr */}
-        {/* {users.map((user: UserConfig, index: number) => (
-          <UserCard
-            key={index}
-            userName={user.first_name + " " + user.last_name}
-            sno={index + 1}
-            handleRemove={handleRemove}
-          />
-        ))} */}
-        {/* with normalizr */}
-        {userNormalizr.ids.map((id: string, index: number) => {
-            let user = userNormalizr?.users[parseInt(id)]
+        {users.map((user, index: number) => {
             return (
               <UserCard
                 key={index}
-                userName={user.first_name + " " + user.last_name}
+                id={user.id}
+                userName={user?.first_name + " " + user?.last_name}
                 sno={index + 1}
                 handleRemove={handleRemove}
               />
@@ -119,4 +106,4 @@ const Users: React.FC<Props> = (props: Props) => {
   )
 }
 
-export default React.memo(Users);
+export default React.memo(UsersNorm);
