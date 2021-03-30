@@ -2,11 +2,11 @@ import React, { useCallback, useState } from 'react'
 
 import { fetchUsers, USER_STATE } from './Api';
 import UserCard from './components/user-card'
-import { RouteComponentProps } from 'react-router';
 import { deleteUser, insertUser } from './redux/users-slice';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 
-const Users: React.FC<RouteComponentProps> = ({ match }: RouteComponentProps) => {
+
+const Users = () => {
 
   const users: Array<USER_STATE> = useAppSelector(state => state.usersRes.users)
   const dispatch = useAppDispatch()
@@ -21,11 +21,11 @@ const Users: React.FC<RouteComponentProps> = ({ match }: RouteComponentProps) =>
     dispatch(insertUser(usersList))
   }
 
-  const handleInput = useCallback((e: React.FormEvent<HTMLInputElement>, name: string): void => {
+  const handleInput = useCallback((e: React.FormEvent<HTMLInputElement>): void => {
 
     const user: USER_STATE = {
       ...newUser,
-      [name]: e.currentTarget.value
+      [e.currentTarget.name]: e.currentTarget.value
     }
 
     setNewUser(user)
@@ -57,18 +57,20 @@ const Users: React.FC<RouteComponentProps> = ({ match }: RouteComponentProps) =>
       <h3>Add User</h3>
       <input
         type="text"
-        name="First Name"
+        name="first_name"
         placeholder="First Name"
+        title="first_name"
         value={newUser.first_name}
-        onChange={(e: React.FormEvent<HTMLInputElement>) => handleInput(e, "first_name")}
+        onChange={handleInput}
         className="mr-2 p-1"
       />
       <input
         type="text"
-        name="Last Name"
+        name="last_name"
         placeholder="Last Name"
+        title="last_name"
         value={newUser.last_name}
-        onChange={(e: React.FormEvent<HTMLInputElement>) => handleInput(e, "last_name")}
+        onChange={handleInput}
         className="mr-2 p-1"
       />
       <button

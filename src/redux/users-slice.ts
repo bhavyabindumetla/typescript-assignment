@@ -17,10 +17,10 @@ export const UserSlice = createSlice({
     initialState,
     reducers: {
         insertUser : (state, action: PayloadAction<Array<USER_STATE>>) => {
-            state.users = [...state.users, ...action.payload]
+            state.users = action.payload
         },
         deleteUser: (state, action: PayloadAction<number>) => {
-            let users = [...state.users]
+            let users = state.users
             users.splice(action.payload,1)
             state.users = users
         }
