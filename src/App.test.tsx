@@ -7,7 +7,7 @@ import { fetchUsers, USER_STATE } from './Api'
 import store from './redux/store'
 import Users from './users'
 import { MemoryRouter } from 'react-router'
-
+import { server, rest } from './tests/testServer'
 const renderWithRedux = (component = <App />) => {
   return {
     ...render(<Provider store={store}>{component}</Provider>),
@@ -45,9 +45,6 @@ describe("users testing", () => {
 
 })
 
-afterEach(cleanup)
-
-
 
 it('check add user', () => {
   renderWithRedux(renderWithRoute(<Users />))
@@ -65,8 +62,6 @@ it('check add user', () => {
   let users = store.getState().usersRes.users
   expect(users.length).toBe(1)
 })
-
-afterEach(cleanup)
 
 it('check remove user', () => {
   renderWithRedux(renderWithRoute(<Users />))
@@ -87,4 +82,19 @@ it('check remove user', () => {
   expect(users.length).toBe(0)
 })
 
-afterEach(cleanup)
+test("with msw", async () => {
+  server.use(
+    rest.get("https://reqres.in/api/users", (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json({data:[{
+                first_name: "Bhavya",
+                id: 1,
+                last_name: "M"
+            }]})
+        )
+    })
+  )
+  renderWithRedux(<Users />)
+  const element = await screen.findByText(/Bhavya/i)
+})
